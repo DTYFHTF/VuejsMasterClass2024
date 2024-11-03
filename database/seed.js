@@ -6,5 +6,20 @@ const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
   process.env.SERVICE_ROLE_KEY,
 )
+const seedProjects = async numEntries => {
+  const projects = []
 
-console.log(supabase)
+  for (let i = 0; i < numEntries; i++) {
+    const name = faker.person.fullName()
+
+    projects.push({
+      name: name,
+      slug: faker.helpers.slugify(name),
+      status: faker.helpers.arrayElement(['in-progress', 'completed']),
+      collaborators: faker.helpers.arrayElements([1, 2, 3]),
+    })
+  }
+  await supabase.from('projects').insert(projects)
+}
+
+await seedProjects(10)
